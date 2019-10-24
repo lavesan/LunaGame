@@ -1,28 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ImageBackground, StyleSheet, TouchableWithoutFeedback, Animated, Button } from 'react-native';
+import { View, ImageBackground, TouchableWithoutFeedback, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import cardJson from '../../assets/json/cards.json';
-
-const StyledButton = styled.TouchableOpacity`
-    width: 100px;
-    height: 30px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #fff;
-    border-radius: 5px;
-`;
 
 const PageView = styled.View`
     flex: 1;
     position: relative;
-`;
-
-const StyledView = styled.View`
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-    border-width: 1px;
-    border-color: red;
 `;
 
 interface ICard {
@@ -32,7 +15,7 @@ interface ICard {
     cardUrl?: boolean;
 }
 
-const defaultCardUrl = '../../assets/imgs/home/button.png';
+const defaultCardUrl = '../../assets/imgs/game/back-card.png';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
@@ -139,34 +122,23 @@ export default ({ navigation }) => {
     }, 2000)
 
     return (
-        <PageView>
-            {/* <ImageBackground source={imgUrl} style={{ width: 100, height: 100 }}></ImageBackground>
-            <Animated.View style={{
-                translateX: moveAnim,
-            }}>
-                <Text>Texto locão ai</Text>
-            </Animated.View>
-            <StyledView>
-                <Text>{girar}</Text>
-            </StyledView>
-            <StyledView style={{ position: 'absolute', top: 400 }}>
-                <Text>2</Text>
-            </StyledView> */}
+        <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1 }}>
             <View style={{ width: '50%', justifyContent: 'space-between', flexDirection: 'row', marginTop: '10%' }}>
                 {cards.map(card => (
                         <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
                             <View>
-                                {card.cardUrl && <ImageBackground 
-                                    source={require('../../assets/playing-metal-bird.png')} 
-                                    style={{ width: 50, height: 100 }} />}
-                                {!card.cardUrl && <ImageBackground 
-                                    source={require(defaultCardUrl)} 
-                                    style={{ width: 50, height: 100 }} />}
+                                {card.cardUrl ? 
+                                    <ImageBackground 
+                                        source={require(`../../assets/imgs/game/card1.png`)} 
+                                        style={{ width: 50, height: 100 }} /> :
+                                    <ImageBackground 
+                                        source={require(defaultCardUrl)} 
+                                        style={{ width: 50, height: 100 }} />}
                             </View>
                         </TouchableWithoutFeedback>
                     )
                 )}
             </View>
-        </PageView>
+        </ImageBackground>
     )
 }

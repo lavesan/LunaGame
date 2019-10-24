@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
 
 export default ({ navigation }) => {
     const [phaseNumber, setPhaseNumber] = useState<number>(null);
@@ -13,8 +13,10 @@ export default ({ navigation }) => {
     }, []);
 
     return (
-        <View>
-            <Text>{phaseNumber}</Text>
-        </View>
+        <ImageBackground source={require('../../assets/imgs/load/full.png')} style={{ width: '100%', height: '100%', flex: 1 }}>
+            <View>
+                <Text>{phaseNumber}</Text>
+            </View>
+        </ImageBackground>
     )
 }
