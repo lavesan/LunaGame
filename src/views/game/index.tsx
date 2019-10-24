@@ -35,10 +35,13 @@ export default ({ navigation }) => {
         // Gira a carta quando a mesma anterior é selecionada
         if (selectedCard && selectedCard.id == id) {
             setCards(cards.map(card => {
-                return {
-                    ...card,
-                    cardUrl: false,
-                }
+                if (rightValues.some(value => value == card.value))
+                    return card;
+                else
+                    return {
+                        ...card,
+                        cardUrl: false,
+                    }
             }))
             setSelectedCard(null);
             return;
