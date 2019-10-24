@@ -7,6 +7,9 @@ export default ({ navigation }) => {
     useEffect(() => {
         const { phase } = navigation.state.params;
         setPhaseNumber(phase);
+        setTimeout(() => {
+            navigation.push('Game', { quantity: phase })
+        }, 1000);
     }, []);
 
     return (

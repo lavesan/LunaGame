@@ -13,8 +13,6 @@ const StyledButton = styled.TouchableOpacity`
 `;
 
 const PageView = styled.View`
-    justify-content: center;
-    align-items: center;
     flex: 1;
     position: relative;
 `;
@@ -27,12 +25,6 @@ const StyledView = styled.View`
     border-color: red;
 `;
 
-const style = StyleSheet.create({
-    est1: {
-        translateY: 0,
-    }
-})
-
 interface ICard {
     id: number;
     url: string;
@@ -40,23 +32,34 @@ interface ICard {
     cardUrl?: boolean;
 }
 
-const defaultCardUrl = '../../assets/imgs/home/background.png';
+const defaultCardUrl = '../../assets/imgs/home/button.png';
 
 export default ({ navigation }) => {
-    const [girar, setGirar] = useState<any>(false);
     const [cards, setCards] = useState<ICard[]>([]);
-    const [selectedId, setSelectedId] = useState<number>(null);
+    const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
     const [moveAnim] = useState(new Animated.Value(0));
 
-    const [rightIds, setRightIds] = useState<(number | string)[]>([]);
+    const [rightValues, setRightValues] = useState<number[]>([]);
 
+    /**
+     * @description Gira as cartas
+     * @param param0 
+     */
     const flipCard = ({ id, value }: ICard): void => {
-        if (rightIds.length === cards.length) {
-            navigation.push('Load', { phase: navigation.state.params.quantity });
+        // Não faz nada quando o valor da carta selecionada já foi acertado
+        if (rightValues.some(arrValue => arrValue == value))
+            return;
+        // Gira a carta quando a mesma anterior é selecionada
+        if (selectedCard && selectedCard.id == id) {
+            setCards(cards.map(card => {
+                return {
+                    ...card,
+                    cardUrl: false,
+                }
+            }))
+            setSelectedCard(null);
             return;
         }
-        if (rightIds.some(id => id == id))
-            return;
         // Gira a carta
         setCards(cards.map(card => {
             if (card.id == id) {
@@ -68,27 +71,41 @@ export default ({ navigation }) => {
             return card;
         }))
         
-        if (!selectedId)
-            setSelectedId(id);
+        if (!selectedCard)
+            setSelectedCard({ id, value });
         else {
-            if (cardJson.some(card => card.id != selectedId && card.value == value) && id != selectedId) {
-                console.log('acertou');
+            if (selectedCard.id != id && selectedCard.value == value) {
                 // Acertou
-                setRightIds([...rightIds, id]);
+                setRightValues([...rightValues, value]);
+                setSelectedCard(null);
             } else {
                 // Errou
                 // As 2 cartas vão virar para baixo
-                console.log('errou');
-                setCards(cards.map(card => {
-                    return {
-                        ...card,
-                        cardUrl: false,
-                    }
-                }))
+                setTimeout(() => {
+                    setCards(cards.map(card => {
+                        if (rightValues.some(value => value == card.value))
+                            return card;
+                        else
+                            return {
+                                ...card,
+                                cardUrl: false,
+                            }
+                    }))
+                    setSelectedCard(null);
+                }, 500)
             }
-            setSelectedId(null);
         }
     }
+
+    useEffect(() => {
+        // Navega para próxima página quando tudo é acertado
+        if (cards.length && rightValues.length === cards.length / 2) {
+            if (navigation.state.params.quantity == 4)
+                navigation.navigate('Finish');
+            else
+                navigation.push('Load', { phase: rightValues.length + 1 });
+        }
+    }, [rightValues])
 
     useEffect(() => {
         const { quantity } = navigation.state.params;
@@ -119,7 +136,6 @@ export default ({ navigation }) => {
 
     setTimeout(async () => {
         await animacao.start();
-        setGirar('Girou agora');
     }, 2000)
 
     return (
@@ -136,19 +152,21 @@ export default ({ navigation }) => {
             <StyledView style={{ position: 'absolute', top: 400 }}>
                 <Text>2</Text>
             </StyledView> */}
-            {cards.map(card => (
-                    <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
-                        <View>
-                            {card.cardUrl && <ImageBackground 
-                                source={require('../../assets/playing-metal-bird.png')} 
-                                style={{ width: 50, height: 100 }} />}
-                            {!card.cardUrl && <ImageBackground 
-                                source={require(defaultCardUrl)} 
-                                style={{ width: 50, height: 100 }} />}
-                        </View>
-                    </TouchableWithoutFeedback>
-                )
-            )}
+            <View style={{ width: '50%', justifyContent: 'space-between', flexDirection: 'row', marginTop: '10%' }}>
+                {cards.map(card => (
+                        <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
+                            <View>
+                                {card.cardUrl && <ImageBackground 
+                                    source={require('../../assets/playing-metal-bird.png')} 
+                                    style={{ width: 50, height: 100 }} />}
+                                {!card.cardUrl && <ImageBackground 
+                                    source={require(defaultCardUrl)} 
+                                    style={{ width: 50, height: 100 }} />}
+                            </View>
+                        </TouchableWithoutFeedback>
+                    )
+                )}
+            </View>
         </PageView>
     )
 }
