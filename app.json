@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rocket game",
-    "slug": "rocketGame",
+    "name": "luna game",
+    "slug": "lunaGame",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -9,8 +9,9 @@
       "android",
       "web"
     ],
+    "description": "Um jogo da memória da luna",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
