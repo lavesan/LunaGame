@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableWithoutFeedback, ImageBackground, View } from 'react-native';
+import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-native';
 import { StyledTouchOpacity } from '../../components/tool-button/styles';
 
 export default ({ navigation }) => {
@@ -15,9 +15,12 @@ export default ({ navigation }) => {
                 alignItems: 'center',
                 flex: 1,
             }}>
-                <View style={{ width: '80%' }}>
-                    <TouchableWithoutFeedback onPress={() => nextStep()}>
-                        <ImageBackground source={require('../../assets/imgs/menu/button.png')} style={{ width: 200, height: 40 }} />
+                <View style={{ width: '80%', height: '60%' }}>
+                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 30, marginBottom: 50 }}>LUNA "A astronauta"</Text>
+                    <TouchableWithoutFeedback onPress={() => nextStep()} style={{ width: 200 }}>
+                        <ImageBackground source={require('../../assets/imgs/menu/button.png')} style={{ width: 200, overflow: 'hidden', borderRadius: 20, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text onPress={() => nextStep()} style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, paddingBottom: 4, paddingTop: 4 }}>START</Text>
+                        </ImageBackground>
                     </TouchableWithoutFeedback>
                 </View>
         </ImageBackground>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ImageBackground, TouchableWithoutFeedback, Animated } from 'react-native';
+import { View, ImageBackground, TouchableWithoutFeedback, Animated, Text } from 'react-native';
 import styled from 'styled-components/native';
 import cardJson from '../../assets/json/cards.json';
 
@@ -15,8 +15,7 @@ interface ICard {
     cardUrl?: boolean;
 }
 
-const defaultCardUrl = '../../assets/imgs/game/back-card.png';
-const teste = '../../assets/imgs/game/back-card.png'
+const defaultCardUrl = '../../assets/imgs/game/default.png';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
@@ -154,9 +153,13 @@ export default ({ navigation }) => {
         }
     }
 
+    const getPhaseIcon = ({ isActive, phase }) => {
+        
+    }
+
     return (
-        <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1 }}>
-            <View style={{ width: '50%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%' }}>
+        <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>
+            <View style={{ width: '50%', height: '60%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%' }}>
                 <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
                     {cards.map((card, i) => {
                         if (i % 2 === 0)
@@ -193,6 +196,10 @@ export default ({ navigation }) => {
                     }
                     )}
                 </View>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', flex: 1, marginTop: '3%' }}>
+                {/* <Text style={{ color: '#fff' }}>ABC</Text> */}
+                <ImageBackground source={require('../../assets/imgs/game/act-1.png')} style={{ width: 100 }} />
             </View>
         </ImageBackground>
     )
