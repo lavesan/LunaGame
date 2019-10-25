@@ -1,30 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { View, TouchableWithoutFeedback, Text, ImageBackground } from 'react-native';
+import React from 'react';
+import { TouchableWithoutFeedback, ImageBackground, View } from 'react-native';
 import { StyledTouchOpacity } from '../../components/tool-button/styles';
-import imgUrl from '../../assets/imgs/menu/button.png';
-import backgroundUrl from '../../assets/imgs/menu/background.png';
 
 export default ({ navigation }) => {
-    const [cards, setCards] = useState<any>([]);
-
     const nextStep = () => {
         navigation.push('Game', { quantity: 2 });
     }
 
     return (
-        // <View></View>
         <ImageBackground 
-            source={backgroundUrl}
+            source={require('../../assets/imgs/menu/background.png')}
             style={{
                 justifyContent: 'center',
                 alignItems: 'center',
                 flex: 1,
             }}>
-                <TouchableWithoutFeedback onPress={() => nextStep()}>
-                    <ImageBackground source={imgUrl} style={{ width: 100, height: 40 }} />
-                </TouchableWithoutFeedback>
-                {/* <StyledTouchOpacity onPress={nextStep}>
-                </StyledTouchOpacity>   */}
+                <View style={{ width: '80%' }}>
+                    <TouchableWithoutFeedback onPress={() => nextStep()}>
+                        <ImageBackground source={require('../../assets/imgs/menu/button.png')} style={{ width: 200, height: 40 }} />
+                    </TouchableWithoutFeedback>
+                </View>
         </ImageBackground>
     )
 }

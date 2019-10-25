@@ -3,17 +3,15 @@ import { ImageBackground, Text, TouchableWithoutFeedback, View } from 'react-nat
 
 export default ({ navigation }) => {
     const backToHome = () => {
-        navigation.navigate('Menu');
+        navigation.popToTop();
     }
 
     return (
         <ImageBackground source={require('../../assets/imgs/finish/background.png')} style={{ width: '100%', height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <View>
-                <Text>Você conseguiu!</Text>
-                <TouchableWithoutFeedback onPress={backToHome}>
-                    <View style={{ borderWidth: 2, borderColor: 'aaa', borderRadius: 10, backgroundColor: 'red' }}>
-                        <Text style={{ fontSize: 20 }}>Retornar</Text>
-                    </View>
+            <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 30 }}>Você conseguiu!</Text>
+                <TouchableWithoutFeedback onPress={backToHome} style={{ justifyContent: 'center', width: 'auto' }}>
+                    <ImageBackground source={require('../../assets/imgs/finish/button.png')} style={{ width: 100, height: 40 }} />
                 </TouchableWithoutFeedback>
             </View>
         </ImageBackground>

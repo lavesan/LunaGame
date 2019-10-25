@@ -1,4 +1,4 @@
-import { createAppContainer, CreateNavigatorConfig } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import MenuView from './views/menu';
