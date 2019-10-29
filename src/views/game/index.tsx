@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ImageBackground, TouchableWithoutFeedback, Animated, Text } from 'react-native';
+import { View, ImageBackground, TouchableWithoutFeedback, Animated, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import cardJson from '../../assets/json/cards.json';
 
@@ -10,10 +10,18 @@ const PageView = styled.View`
 
 interface ICard {
     id: number;
-    url: string;
     value: number;
     cardUrl?: boolean;
 }
+
+const styles = StyleSheet.create({
+    levelImage: {
+        width: 80,
+        height: 35,
+        borderRadius: 5,
+        overflow: 'hidden',
+    }
+})
 
 const defaultCardUrl = '../../assets/imgs/game/default.png';
 
@@ -42,7 +50,7 @@ export default ({ navigation }) => {
                         ...card,
                         cardUrl: false,
                     }
-            }))
+            }));
             setSelectedCard(null);
             return;
         }
@@ -55,7 +63,7 @@ export default ({ navigation }) => {
                 }
             }
             return card;
-        }))
+        }));
         
         if (!selectedCard)
             setSelectedCard({ id, value });
@@ -124,7 +132,7 @@ export default ({ navigation }) => {
         await animacao.start();
     }, 2000)
 
-    const renderImage = (value: number) => {
+    const renderCardImage = (value: number) => {
         switch(value) {
             case 0:
                 return (
@@ -153,13 +161,56 @@ export default ({ navigation }) => {
         }
     }
 
-    const getPhaseIcon = ({ isActive, phase }) => {
-        
+    const RenderPhaseIcon = () => {
+        const { quantity } = navigation.state.params;
+        if (quantity == 2) {
+            return (
+                <>
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-1.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/inact-2.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/inact-3.png`)} 
+                        style={styles.levelImage} />
+                </>
+            )
+        } else if(quantity == 3) {
+            return (
+                <>
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-1.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-2.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/inact-3.png`)} 
+                        style={styles.levelImage} />
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-1.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-2.png`)} 
+                        style={styles.levelImage} />
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/act-3.png`)} 
+                        style={styles.levelImage} />
+                </>
+            )
+        }
     }
 
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>
-            <View style={{ width: '50%', height: '60%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%' }}>
+            <View style={{ height: '60%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%', flex: 0.5 }}>
                 <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
                     {cards.map((card, i) => {
                         if (i % 2 === 0)
@@ -167,7 +218,7 @@ export default ({ navigation }) => {
                                     <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
                                         <View>
                                             {card.cardUrl ? 
-                                                renderImage(card.value) :
+                                                renderCardImage(card.value) :
                                                 <ImageBackground 
                                                     source={require(defaultCardUrl)} 
                                                     style={{ width: 70, height: 100 }} />}
@@ -185,7 +236,7 @@ export default ({ navigation }) => {
                                     <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
                                         <View>
                                             {card.cardUrl ? 
-                                                renderImage(card.value) :
+                                                renderCardImage(card.value) :
                                                 <ImageBackground 
                                                     source={require(defaultCardUrl)} 
                                                     style={{ width: 70, height: 100 }} />}
@@ -197,10 +248,10 @@ export default ({ navigation }) => {
                     )}
                 </View>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', flex: 1, marginTop: '3%' }}>
-                {/* <Text style={{ color: '#fff' }}>ABC</Text> */}
-                <ImageBackground source={require('../../assets/imgs/game/act-1.png')} style={{ width: 100 }} />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start', marginTop: '3%', flex: 0.5 }}>
+                <RenderPhaseIcon />
             </View>
         </ImageBackground>
     )
 }
+

@@ -9,6 +9,9 @@
       "android",
       "web"
     ],
+    "android": {
+      "package": "com.valdery.lunagame"
+    },
     "description": "Um jogo da memória da luna",
     "version": "1.0.1",
     "orientation": "landscape",
