@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, ImageBackground, TouchableWithoutFeedback, Animated, StyleSheet } from 'react-native';
-import styled from 'styled-components/native';
+import { View, ImageBackground } from 'react-native';
 import cardJson from '../../assets/json/cards.json';
-import RenderPhaseIcon from '../../components/level-card'; 
-
-const PageView = styled.View`
-    flex: 1;
-    position: relative;
-`;
-
-interface ICard {
-    id: number;
-    value: number;
-    cardUrl?: boolean;
-}
-
-const defaultCardUrl = '../../assets/imgs/game/default.png';
+import RenderCardIcons from '../../components/select-card';
+import RenderPhaseIcon from '../../components/level-card';
+import { ICard } from './interfaces';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
-    const [moveAnim] = useState(new Animated.Value(0));
 
     const [rightValues, setRightValues] = useState<number[]>([]);
 
@@ -112,86 +99,10 @@ export default ({ navigation }) => {
         setCards(arr);
     }, []);
 
-    const animacao = Animated.timing(
-        moveAnim,
-        {
-          toValue: 100,
-          duration: 1000,
-        }
-      );
-
-    setTimeout(async () => {
-        await animacao.start();
-    }, 2000)
-
-    const renderCardImage = (value: number) => {
-        switch(value) {
-            case 0:
-                return (
-                   <ImageBackground 
-                       source={require(`../../assets/imgs/game/card0.png`)} 
-                       style={{ width: 70, height: 100 }} />
-                )
-            case 1:
-                return (
-                   <ImageBackground 
-                       source={require(`../../assets/imgs/game/card1.png`)} 
-                       style={{ width: 70, height: 100 }} />
-                )
-            case 2:
-                return (
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/card2.png`)} 
-                        style={{ width: 70, height: 100 }} />
-                )
-            case 3:
-                return (
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/card3.png`)} 
-                        style={{ width: 70, height: 100 }} />
-                )
-        }
-    }
-
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>
             <View style={{ height: '60%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%', flex: 0.5 }}>
-                <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
-                    {cards.map((card, i) => {
-                        if (i % 2 === 0)
-                            return (
-                                    <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
-                                        <View>
-                                            {card.cardUrl ? 
-                                                renderCardImage(card.value) :
-                                                <ImageBackground 
-                                                    source={require(defaultCardUrl)} 
-                                                    style={{ width: 70, height: 100 }} />}
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                );
-                        else return null;
-                    }
-                    )}
-                </View>
-                <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
-                    {cards.map((card, i) => {
-                        if (i % 2 !== 0)
-                            return (
-                                    <TouchableWithoutFeedback key={card.id} onPress={() => flipCard(card)}>
-                                        <View>
-                                            {card.cardUrl ? 
-                                                renderCardImage(card.value) :
-                                                <ImageBackground 
-                                                    source={require(defaultCardUrl)} 
-                                                    style={{ width: 70, height: 100 }} />}
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                );
-                        else return null;
-                    }
-                    )}
-                </View>
+                <RenderCardIcons cards={cards} flipCard={flipCard} />                
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start', marginTop: '3%', flex: 0.5 }}>
                 <RenderPhaseIcon navigation={navigation} />

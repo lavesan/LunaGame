@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-native';
-import { StyledTouchOpacity } from '../../components/tool-button/styles';
 
 export default ({ navigation }) => {
     const nextStep = () => {
