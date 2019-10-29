@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ImageBackground, TouchableWithoutFeedback, Animated, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import cardJson from '../../assets/json/cards.json';
+import RenderPhaseIcon from '../../components/level-card'; 
 
 const PageView = styled.View`
     flex: 1;
@@ -13,15 +14,6 @@ interface ICard {
     value: number;
     cardUrl?: boolean;
 }
-
-const styles = StyleSheet.create({
-    levelImage: {
-        width: 80,
-        height: 35,
-        borderRadius: 5,
-        overflow: 'hidden',
-    }
-})
 
 const defaultCardUrl = '../../assets/imgs/game/default.png';
 
@@ -161,53 +153,6 @@ export default ({ navigation }) => {
         }
     }
 
-    const RenderPhaseIcon = () => {
-        const { quantity } = navigation.state.params;
-        if (quantity == 2) {
-            return (
-                <>
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-1.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/inact-2.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/inact-3.png`)} 
-                        style={styles.levelImage} />
-                </>
-            )
-        } else if(quantity == 3) {
-            return (
-                <>
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-1.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-2.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/inact-3.png`)} 
-                        style={styles.levelImage} />
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-1.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-2.png`)} 
-                        style={styles.levelImage} />
-                    <ImageBackground 
-                        source={require(`../../assets/imgs/game/act-3.png`)} 
-                        style={styles.levelImage} />
-                </>
-            )
-        }
-    }
-
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>
             <View style={{ height: '60%', justifyContent: 'space-between', flexDirection: 'column', marginTop: '5%', flex: 0.5 }}>
@@ -249,7 +194,7 @@ export default ({ navigation }) => {
                 </View>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-start', marginTop: '3%', flex: 0.5 }}>
-                <RenderPhaseIcon />
+                <RenderPhaseIcon navigation={navigation} />
             </View>
         </ImageBackground>
     )
