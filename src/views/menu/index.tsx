@@ -3,7 +3,10 @@ import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-nat
 
 export default ({ navigation }) => {
     const nextStep = () => {
-        navigation.push('Game', { quantity: 2 });
+        navigation.push('Game', { 
+            quantity: 2,
+            cardsValues: [0, 1]  
+        });
     }
 
     return (

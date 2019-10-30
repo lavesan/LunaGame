@@ -4,16 +4,16 @@ import cardJson from '../../assets/json/cards.json';
 import RenderCardIcons from '../../components/select-card';
 import RenderPhaseIcon from '../../components/level-card';
 import { ICard } from './interfaces';
+import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
-
     const [rightValues, setRightValues] = useState<number[]>([]);
 
     /**
      * @description Gira as cartas
-     * @param param0 
+     * @param {ICard} param0 carta que será virada 
      */
     const flipCard = ({ id, value }: ICard): void => {
         // Não faz nada quando o valor da carta selecionada já foi acertado
@@ -63,29 +63,22 @@ export default ({ navigation }) => {
                                 ...card,
                                 cardUrl: false,
                             }
-                    }))
+                    }));
                     setSelectedCard(null);
                 }, 500)
             }
         }
     }
 
-    useEffect(() => {
-        // Navega para próxima página quando tudo é acertado
-        if (cards.length && rightValues.length === cards.length / 2) {
-            if (navigation.state.params.quantity == 4)
-                navigation.navigate('Finish');
-            else
-                navigation.push('Load', { phase: rightValues.length + 1 });
-        }
-    }, [rightValues])
-
-    useEffect(() => {
-        const { quantity } = navigation.state.params;
+    /**
+     * @description Posiciona as cartas em locais aleatórios
+     */
+    const shuffleCards = (): void => {
+        const { quantity, cardsValues } = navigation.state.params;
         const cardsSize = quantity * 2;
         let arr: ICard[] = Array.from({ length: cardsSize });
 
-        const cards = cardJson.slice(0, cardsSize);
+        const cards = cardJson.filter(({ value }) => cardsValues.includes(value));
 
         cards.forEach(card => {
             do {
@@ -95,9 +88,36 @@ export default ({ navigation }) => {
                     break;
                 }
             } while (true);
-        })
+        });
         setCards(arr);
-    }, []);
+
+        (async () => {
+            const soundObject = new Audio.Sound();
+            try {
+                await soundObject.loadAsync(require('../../assets/media/slipknot_spit_it_out.mp3'));
+                await soundObject.playAsync();
+                // Your sound is playing!
+            } catch (error) {
+                // An error occurred!
+                console.log('erro: ', error);
+            }
+        })();
+    }
+
+    /**
+     * Navega para próxima página quando todas as cartas estão ok
+     */
+    const gameEnd = () => {
+        if (cards.length && rightValues.length === cards.length / 2) {
+            if (navigation.state.params.quantity == 4)
+                navigation.navigate('Finish');
+            else
+                navigation.push('Load', { phase: rightValues.length });
+        }
+    }
+
+    useEffect(() => shuffleCards(), []);
+    useEffect(() => gameEnd(), [rightValues]);
 
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>

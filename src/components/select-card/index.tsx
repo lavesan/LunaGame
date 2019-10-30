@@ -36,6 +36,18 @@ export default ({ flipCard, cards }: ISelectCard) => {
                         source={require(`../../assets/imgs/game/card3.png`)} 
                         style={{ width: 70, height: 100 }} />
                 )
+            case 4:
+                return (
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/card4.png`)} 
+                        style={{ width: 70, height: 100 }} />
+                )
+            case 5:
+                return (
+                    <ImageBackground 
+                        source={require(`../../assets/imgs/game/card5.png`)} 
+                        style={{ width: 70, height: 100 }} />
+                )
         }
     }
 
