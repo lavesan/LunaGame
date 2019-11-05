@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-native';
+import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
+    const soundInit = new Audio.Sound();
+    const handleInit = () => {
+        (async () => {
+            try {
+                await soundInit.loadAsync(require('../../assets/media/tema_inicial.mp3'));
+                await soundInit.playAsync();
+            } catch(e) {
+                console.log('Aúdio não carregou');
+            }
+        })();
+    }
+
     const nextStep = () => {
+        soundInit.stopAsync();
         navigation.push('Game', { 
             quantity: 2,
             cardsValues: [0, 1]  
         });
     }
+
+    useEffect(() => handleInit(), []);
 
     return (
         <ImageBackground 

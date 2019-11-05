@@ -10,6 +10,21 @@ export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
     const [rightValues, setRightValues] = useState<number[]>([]);
+    const [playCardAudio, setPlayCardAudio] = useState<() => void>(null);
+
+    const soundCard = new Audio.Sound();
+    soundCard.loadAsync(require('../../assets/media/cartas.mp3')).then(() => {
+        setPlayCardAudio(async () => {
+            try {
+                // await soundCard.stopAsync();
+                await soundCard.playAsync();
+                // Your sound is playing!
+            } catch (error) {
+                // An error occurred!
+                console.log('erro: ', error);
+            }
+        });
+    });
 
     /**
      * @description Gira as cartas
@@ -54,6 +69,7 @@ export default ({ navigation }) => {
             } else {
                 // Errou
                 // As 2 cartas vão virar para baixo
+                setSelectedCard(null);
                 setTimeout(() => {
                     setCards(cards.map(card => {
                         if (rightValues.some(value => value == card.value))
@@ -64,9 +80,21 @@ export default ({ navigation }) => {
                                 cardUrl: false,
                             }
                     }));
-                    setSelectedCard(null);
                 }, 500)
             }
+        }
+    }
+
+    const handleInit = (): void => {
+        shuffleCards();
+        const audioObject = new Audio.Sound();
+        try {
+            audioObject.loadAsync(require('../../assets/media/tela_inicial.mp3'))
+                .then(async () => {
+                    await audioObject.playAsync();
+                })
+        } catch {
+            console.log('Aúdio inicial não carregou')
         }
     }
 
@@ -90,18 +118,6 @@ export default ({ navigation }) => {
             } while (true);
         });
         setCards(arr);
-
-        (async () => {
-            const soundObject = new Audio.Sound();
-            try {
-                await soundObject.loadAsync(require('../../assets/media/slipknot_spit_it_out.mp3'));
-                await soundObject.playAsync();
-                // Your sound is playing!
-            } catch (error) {
-                // An error occurred!
-                console.log('erro: ', error);
-            }
-        })();
     }
 
     /**
@@ -116,7 +132,8 @@ export default ({ navigation }) => {
         }
     }
 
-    useEffect(() => shuffleCards(), []);
+    useEffect(() => handleInit(), []);
+    useEffect(() => typeof playCardAudio === 'function' && playCardAudio(), [cards]);
     useEffect(() => gameEnd(), [rightValues]);
 
     return (
