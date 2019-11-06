@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
 })
 
 export default ({ navigation }) => {
-    const { quantity } = navigation.state.params;
-    if (quantity == 2) {
+    const { phase } = navigation.state.params;
+    if (phase === 1) {
         return (
             <>
                 <ImageBackground 
@@ -26,7 +26,7 @@ export default ({ navigation }) => {
                     style={styles.levelImage} />
             </>
         )
-    } else if(quantity == 3) {
+    } else if(phase === 2) {
         return (
             <>
                 <ImageBackground 

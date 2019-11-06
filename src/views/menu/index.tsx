@@ -3,12 +3,14 @@ import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-nat
 import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
-    const soundInit = new Audio.Sound();
+    const audioBackground = new Audio.Sound();
+    
     const handleInit = () => {
         (async () => {
             try {
-                await soundInit.loadAsync(require('../../assets/media/tema_inicial.mp3'));
-                await soundInit.playAsync();
+                await audioBackground.loadAsync(require('../../assets/media/tema_inicial.mp3'));
+                await audioBackground.setIsLoopingAsync(true);
+                await audioBackground.playAsync();
             } catch(e) {
                 console.log('Aúdio não carregou');
             }
@@ -16,9 +18,9 @@ export default ({ navigation }) => {
     }
 
     const nextStep = () => {
-        soundInit.stopAsync();
+        audioBackground.stopAsync();
         navigation.push('Game', { 
-            quantity: 2,
+            phase: 1,
             cardsValues: [0, 1]  
         });
     }

@@ -4,9 +4,9 @@ import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
     const handleInit = (): void => {
-        const { phase } = navigation.state.params;
+        const { phase, gameAudioBackground } = navigation.state.params;
         let cardsValues;
-        if (phase === 2)
+        if (phase === 1)
             cardsValues = [0, 1, 2];
         else
             cardsValues = [0, 3, 4, 5];
@@ -28,10 +28,11 @@ export default ({ navigation }) => {
                 }
 
                 navigation.push('Game', {
-                    quantity: phase + 1,
+                    phase,
                     cardsValues,
+                    gameAudioBackground,
                 });
-            }, 3000);
+            }, 3500);
         })();
     }
 

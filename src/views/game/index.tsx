@@ -12,19 +12,9 @@ export default ({ navigation }) => {
     const [rightValues, setRightValues] = useState<number[]>([]);
     const [playCardAudio, setPlayCardAudio] = useState<() => void>(null);
 
-    const soundCard = new Audio.Sound();
-    soundCard.loadAsync(require('../../assets/media/cartas.mp3')).then(() => {
-        setPlayCardAudio(async () => {
-            try {
-                // await soundCard.stopAsync();
-                await soundCard.playAsync();
-                // Your sound is playing!
-            } catch (error) {
-                // An error occurred!
-                console.log('erro: ', error);
-            }
-        });
-    });
+    const audioFlipCard = new Audio.Sound();
+    const audioIntroduction = new Audio.Sound();
+    let audioBackground = new Audio.Sound();
 
     /**
      * @description Gira as cartas
@@ -87,23 +77,49 @@ export default ({ navigation }) => {
 
     const handleInit = (): void => {
         shuffleCards();
-        const audioObject = new Audio.Sound();
-        try {
-            audioObject.loadAsync(require('../../assets/media/tela_inicial.mp3'))
-                .then(async () => {
-                    await audioObject.playAsync();
-                })
-        } catch {
-            console.log('Aúdio inicial não carregou')
-        }
+        (async () => {
+            const { phase, gameAudioBackground } = navigation.state.params;
+            try {
+                // How to play the game introduction audio
+                if (phase === 1) {
+                    await audioIntroduction.loadAsync(require('../../assets/media/tela_inicial.mp3'));
+                    await audioIntroduction.playAsync();
+                }
+
+                // In game background audio
+                if (!gameAudioBackground) {
+                    await audioBackground.loadAsync(require('../../assets/media/durante_o_jogo.mp3'));
+                    await audioBackground.setIsLoopingAsync(true);
+                    await audioBackground.setVolumeAsync(0.6);
+                    await audioBackground.playAsync();
+                } else {
+                    audioBackground = gameAudioBackground;
+                }
+
+                // Flip card audio
+                await audioFlipCard.loadAsync(require('../../assets/media/cartas.mp3'));
+                setPlayCardAudio(async () => {
+                    console.log('roda peste');
+                    try {
+                        await audioFlipCard.replayAsync();
+                        // await audioFlipCard.setPositionAsync(0);
+                        // await audioFlipCard.playAsync();
+                    } catch (e) {
+                        console.log('Erro em carregar aúdio de flip');
+                    }
+                });
+            } catch (e) {
+                console.log('Áudio background não rodou');
+            }
+        })();
     }
 
     /**
      * @description Posiciona as cartas em locais aleatórios
      */
     const shuffleCards = (): void => {
-        const { quantity, cardsValues } = navigation.state.params;
-        const cardsSize = quantity * 2;
+        const { cardsValues } = navigation.state.params;
+        const cardsSize = cardsValues.length * 2;
         let arr: ICard[] = Array.from({ length: cardsSize });
 
         const cards = cardJson.filter(({ value }) => cardsValues.includes(value));
@@ -125,16 +141,38 @@ export default ({ navigation }) => {
      */
     const gameEnd = () => {
         if (cards.length && rightValues.length === cards.length / 2) {
-            if (navigation.state.params.quantity == 4)
-                navigation.navigate('Finish');
-            else
-                navigation.push('Load', { phase: rightValues.length });
+            (async () => {
+                const { phase } = navigation.state.params;
+                try {
+                    if (audioIntroduction)
+                        await audioIntroduction.stopAsync();    
+                } catch (e) {
+                    console.log('Erro em parar o aúdio');
+                } finally {
+                    if (phase === 3) {
+                        try {
+                            await audioBackground.stopAsync();
+                        } catch (e) {}
+                        finally {
+                            navigation.navigate('Finish');
+                        }
+                    }
+                    else
+                        navigation.push('Load', {
+                            phase,
+                            gameAudioBackground: audioBackground,
+                        });
+                }
+            })();
         }
     }
 
     useEffect(() => handleInit(), []);
-    useEffect(() => typeof playCardAudio === 'function' && playCardAudio(), [cards]);
     useEffect(() => gameEnd(), [rightValues]);
+    useEffect(() => { 
+        if (typeof playCardAudio === 'function')
+            playCardAudio();
+    }, [cards]);
 
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>

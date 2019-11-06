@@ -3,16 +3,21 @@ import { ImageBackground, Text, TouchableWithoutFeedback, View } from 'react-nat
 import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
+    const audioBackground = new Audio.Sound();
+    
     const backToHome = () => {
-        navigation.popToTop();
+        (async () => {
+            if (audioBackground)
+                await audioBackground.stopAsync();
+            navigation.popToTop();
+        })
     }
 
     useEffect(() => {
         (async () => {
-            const soundAudio = new Audio.Sound();
             try {
-                await soundAudio.loadAsync(require('../../assets/media/parabens.mp3'));
-                await soundAudio.playAsync();
+                await audioBackground.loadAsync(require('../../assets/media/parabens.mp3'));
+                await audioBackground.playAsync();
             } catch(e) {
                 console.log('audio deu pau')
             }
