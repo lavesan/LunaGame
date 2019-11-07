@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 export default ({ navigation }) => {
     const audioBackground = new Audio.Sound();
     
-    const backToHome = () => {
+    const backToHome = (): void => {
         (async () => {
             try {
                 await audioBackground.stopAsync();

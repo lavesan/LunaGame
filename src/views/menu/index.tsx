@@ -4,8 +4,8 @@ import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
     const audioBackground = new Audio.Sound();
-    
-    const handleInit = () => {
+
+    const handleInit = (): void => {
         (async () => {
             try {
                 await audioBackground.loadAsync(require('../../assets/media/tema_inicial.mp3'));
@@ -17,7 +17,7 @@ export default ({ navigation }) => {
         })();
     }
 
-    const nextStep = () => {
+    const nextStep = (): void => {
         audioBackground.stopAsync();
         navigation.push('Game', { 
             phase: 1,

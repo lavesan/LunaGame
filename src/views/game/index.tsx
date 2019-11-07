@@ -162,8 +162,8 @@ export default ({ navigation }) => {
         loadAudios();
     }
 
-    useEffect(() => handleInit(), []);
-    useEffect(() => gameEnd(), [rightValues]);
+    useEffect((): void => handleInit(), []);
+    useEffect((): void => gameEnd(), [rightValues]);
 
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>

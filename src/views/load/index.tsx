@@ -35,7 +35,7 @@ export default ({ navigation }) => {
         })();
     }
 
-    useEffect(() => handleInit(), []);
+    useEffect((): void => handleInit(), []);
 
     return (
         <ImageBackground source={require('../../assets/imgs/load/full.png')} style={{ width: '100%', height: '100%', flex: 1 }} />
