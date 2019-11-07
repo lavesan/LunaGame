@@ -7,10 +7,14 @@ export default ({ navigation }) => {
     
     const backToHome = () => {
         (async () => {
-            if (audioBackground)
+            try {
                 await audioBackground.stopAsync();
-            navigation.popToTop();
-        })
+            } catch (e) {
+                console.log('Erro em parar o aúdio background')
+            } finally {
+                navigation.popToTop();
+            }
+        })();
     }
 
     useEffect(() => {
@@ -19,7 +23,7 @@ export default ({ navigation }) => {
                 await audioBackground.loadAsync(require('../../assets/media/parabens.mp3'));
                 await audioBackground.playAsync();
             } catch(e) {
-                console.log('audio deu pau')
+                console.log('Erro ao carregar aúdio background')
             }
         })();
     }, []);

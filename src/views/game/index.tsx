@@ -5,22 +5,33 @@ import RenderCardIcons from '../../components/select-card';
 import RenderPhaseIcon from '../../components/level-card';
 import { ICard } from './interfaces';
 import { Audio } from 'expo-av';
+import load from '../load/index.js';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
     const [rightValues, setRightValues] = useState<number[]>([]);
-    const [playCardAudio, setPlayCardAudio] = useState<() => void>(null);
 
-    const audioFlipCard = new Audio.Sound();
     const audioIntroduction = new Audio.Sound();
+    const audioFlipCard = new Audio.Sound();
     let audioBackground = new Audio.Sound();
 
+    const playCardAudio = async (): Promise<any> => {
+        try {
+            if (!audioFlipCard._loaded)
+                await audioFlipCard.loadAsync(require('../../assets/media/cartas.mp3'));
+            await audioFlipCard.playAsync();
+        } catch (e) {
+            console.log('Erro em carregar aúdio de flip');
+        }
+    }
     /**
      * @description Gira as cartas
      * @param {ICard} param0 carta que será virada 
      */
     const flipCard = ({ id, value }: ICard): void => {
+        playCardAudio();
+
         // Não faz nada quando o valor da carta selecionada já foi acertado
         if (rightValues.some(arrValue => arrValue == value))
             return;
@@ -75,43 +86,26 @@ export default ({ navigation }) => {
         }
     }
 
-    const handleInit = (): void => {
-        shuffleCards();
-        (async () => {
-            const { phase, gameAudioBackground } = navigation.state.params;
-            try {
-                // How to play the game introduction audio
-                if (phase === 1) {
-                    await audioIntroduction.loadAsync(require('../../assets/media/tela_inicial.mp3'));
-                    await audioIntroduction.playAsync();
-                }
-
-                // In game background audio
-                if (!gameAudioBackground) {
-                    await audioBackground.loadAsync(require('../../assets/media/durante_o_jogo.mp3'));
-                    await audioBackground.setIsLoopingAsync(true);
-                    await audioBackground.setVolumeAsync(0.6);
-                    await audioBackground.playAsync();
-                } else {
-                    audioBackground = gameAudioBackground;
-                }
-
-                // Flip card audio
-                await audioFlipCard.loadAsync(require('../../assets/media/cartas.mp3'));
-                setPlayCardAudio(async () => {
-                    console.log('roda peste');
-                    try {
-                        await audioFlipCard.replayAsync();
-                        // await audioFlipCard.setPositionAsync(0);
-                        // await audioFlipCard.playAsync();
-                    } catch (e) {
-                        console.log('Erro em carregar aúdio de flip');
-                    }
-                });
-            } catch (e) {
-                console.log('Áudio background não rodou');
+    /**
+     * @description Carrega os aúdios background
+     */
+    const loadAudios = async (): Promise<any> => {
+        const { phase } = navigation.state.params;
+        try {
+            // Aúdio de como jogar
+            if (phase === 1) {
+                await audioIntroduction.loadAsync(require('../../assets/media/tela_inicial.mp3'));
+                await audioIntroduction.playAsync();
             }
-        })();
+
+            // Aúdio de background do jogo
+            await audioBackground.loadAsync(require('../../assets/media/durante_o_jogo.mp3'));
+            await audioBackground.setIsLoopingAsync(true);
+            // await audioBackground.setVolumeAsync(0.4);
+            await audioBackground.playAsync();
+        } catch (e) {
+            console.log('Áudio background não rodou');
+        }
     }
 
     /**
@@ -137,42 +131,39 @@ export default ({ navigation }) => {
     }
 
     /**
-     * Navega para próxima página quando todas as cartas estão ok
+     * @description Navega para próxima página quando todas as cartas estão ok
      */
-    const gameEnd = () => {
+    const gameEnd = (): void => {
         if (cards.length && rightValues.length === cards.length / 2) {
             (async () => {
                 const { phase } = navigation.state.params;
                 try {
                     if (audioIntroduction)
-                        await audioIntroduction.stopAsync();    
+                        await audioIntroduction.stopAsync();
+                    await audioBackground.stopAsync();
                 } catch (e) {
                     console.log('Erro em parar o aúdio');
                 } finally {
-                    if (phase === 3) {
-                        try {
-                            await audioBackground.stopAsync();
-                        } catch (e) {}
-                        finally {
-                            navigation.navigate('Finish');
-                        }
-                    }
+                    // Era a última fase, vai para tela de finalização
+                    if (phase === 3)
+                        navigation.navigate('Finish');
+                    // Vai para tela de carregamento com o foguete
                     else
                         navigation.push('Load', {
                             phase,
-                            gameAudioBackground: audioBackground,
                         });
                 }
             })();
         }
     }
+    
+    const handleInit = (): void => {
+        shuffleCards();
+        loadAudios();
+    }
 
     useEffect(() => handleInit(), []);
     useEffect(() => gameEnd(), [rightValues]);
-    useEffect(() => { 
-        if (typeof playCardAudio === 'function')
-            playCardAudio();
-    }, [cards]);
 
     return (
         <ImageBackground source={require('../../assets/imgs/game/background.png')} style={{ width: '100%', height: '100%', flex: 1, flexDirection: 'row' }}>
