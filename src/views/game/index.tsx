@@ -5,16 +5,15 @@ import RenderCardIcons from '../../components/select-card';
 import RenderPhaseIcon from '../../components/level-card';
 import { ICard } from './interfaces';
 import { Audio } from 'expo-av';
-import load from '../load/index.js';
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
     const [rightValues, setRightValues] = useState<number[]>([]);
 
-    const audioIntroduction = new Audio.Sound();
+    let audioIntroduction;
     const audioFlipCard = new Audio.Sound();
-    let audioBackground = new Audio.Sound();
+    const audioBackground = new Audio.Sound();
 
     const playCardAudio = async (): Promise<any> => {
         try {
@@ -94,8 +93,9 @@ export default ({ navigation }) => {
         try {
             // Aúdio de como jogar
             if (phase === 1) {
-                await audioIntroduction.loadAsync(require('../../assets/media/tela_inicial.mp3'));
-                await audioIntroduction.playAsync();
+                // audioIntroduction = new Audio.Sound();
+                // await audioIntroduction.loadAsync(require('../../assets/media/tela_inicial.mp3'));
+                // await audioIntroduction.playAsync();
             }
 
             // Aúdio de background do jogo
@@ -130,31 +130,33 @@ export default ({ navigation }) => {
         setCards(arr);
     }
 
+    const navigateToAnotherView = async () => {
+        const { phase } = navigation.state.params;
+        await audioBackground.stopAsync();
+        // try {
+        //     // await audioBackground.stopAsync();
+        //     // if (audioIntroduction)
+        //     //     audioIntroduction.stopAsync();
+        // } catch (e) {
+        //     console.log('Erro em parar o aúdio');
+        // } finally {
+            // Era a última fase, vai para tela de finalização
+            if (phase === 3)
+                navigation.navigate('Finish');
+            // Vai para tela de carregamento com o foguete
+            else
+                navigation.push('Load', {
+                    phase,
+                });
+        // }
+    }
+
     /**
      * @description Navega para próxima página quando todas as cartas estão ok
      */
     const gameEnd = (): void => {
-        if (cards.length && rightValues.length === cards.length / 2) {
-            (async () => {
-                const { phase } = navigation.state.params;
-                try {
-                    if (audioIntroduction)
-                        await audioIntroduction.stopAsync();
-                    await audioBackground.stopAsync();
-                } catch (e) {
-                    console.log('Erro em parar o aúdio');
-                } finally {
-                    // Era a última fase, vai para tela de finalização
-                    if (phase === 3)
-                        navigation.navigate('Finish');
-                    // Vai para tela de carregamento com o foguete
-                    else
-                        navigation.push('Load', {
-                            phase,
-                        });
-                }
-            })();
-        }
+        if (cards.length && rightValues.length === cards.length / 2)
+            navigateToAnotherView();
     }
     
     const handleInit = (): void => {

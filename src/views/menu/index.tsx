@@ -17,12 +17,16 @@ export default ({ navigation }) => {
         })();
     }
 
-    const nextStep = (): void => {
-        audioBackground.stopAsync();
-        navigation.push('Game', { 
-            phase: 1,
-            cardsValues: [0, 1]  
-        });
+    const nextStep = async (): Promise<any> => {
+        try {
+            await audioBackground.stopAsync();
+        } catch (e) {}
+        finally {
+            navigation.push('Game', {
+                phase: 1,
+                cardsValues: [0, 1]  
+            });
+        }
     }
 
     useEffect(() => handleInit(), []);
