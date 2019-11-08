@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "description": "Um jogo da memória da luna",
+    "description": "O jogo da memória da luna",
     "version": "1.0.2",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
