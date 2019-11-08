@@ -3,11 +3,12 @@ import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-nat
 import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
-    const audioBackground = new Audio.Sound();
+    let audioBackground;
 
     const handleInit = (): void => {
         (async () => {
             try {
+                audioBackground = new Audio.Sound();
                 await audioBackground.loadAsync(require('../../assets/media/tema_inicial.mp3'));
                 await audioBackground.setIsLoopingAsync(true);
                 await audioBackground.playAsync();

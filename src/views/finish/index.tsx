@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { ImageBackground, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
-    const audioBackground = new Audio.Sound();
+    let audioBackground;
     
     const backToHome = (): void => {
         (async () => {
@@ -12,7 +13,12 @@ export default ({ navigation }) => {
             } catch (e) {
                 console.log('Erro em parar o aúdio background')
             } finally {
-                navigation.popToTop();
+                // Reseta a navegação, para reinderizar todas as páginas
+                const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Menu' })],
+                });
+                navigation.dispatch(resetAction);
             }
         })();
     }
@@ -20,6 +26,7 @@ export default ({ navigation }) => {
     useEffect(() => {
         (async () => {
             try {
+                audioBackground = new Audio.Sound();
                 await audioBackground.loadAsync(require('../../assets/media/parabens.mp3'));
                 await audioBackground.playAsync();
             } catch(e) {
