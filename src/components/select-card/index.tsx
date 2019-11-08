@@ -1,13 +1,8 @@
 import React from 'react';
 import { View, ImageBackground, TouchableWithoutFeedback } from 'react-native';
-import { ICard } from '../../views/game/interfaces';
+import { ISelectCard } from './interfaces';
 
 const defaultCardUrl = '../../assets/imgs/game/default.png';
-
-interface ISelectCard {
-    flipCard: (card: ICard) => void;
-    cards: ICard[];
-}
 
 export default ({ flipCard, cards }: ISelectCard) => {
     const renderCardImage = (value: number) => {

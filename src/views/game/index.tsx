@@ -8,16 +8,17 @@ import { Audio } from 'expo-av';
 
 let audioBackground;
 let audioIntroduction;
+let audioFlipCard;
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
     const [selectedCard, setSelectedCard] = useState<{ id: number, value: number }>(null);
     const [rightValues, setRightValues] = useState<number[]>([]);
-    
-    const audioFlipCard = new Audio.Sound();
 
     const playCardAudio = async (): Promise<any> => {
         try {
+            if (!audioFlipCard)
+                audioFlipCard = new Audio.Sound();
             if (!audioFlipCard._loaded)
                 await audioFlipCard.loadAsync(require('../../assets/media/cartas.mp3'));
             await audioFlipCard.playAsync();
@@ -146,7 +147,7 @@ export default ({ navigation }) => {
     const navigateToAnotherView = async () => {
         const { phase } = navigation.state.params;
         try {
-            if (audioIntroduction)
+            if (audioIntroduction && audioIntroduction._loaded)
                 await audioIntroduction.stopAsync();
         } catch (e) {
             console.log('Erro em parar o aúdio');

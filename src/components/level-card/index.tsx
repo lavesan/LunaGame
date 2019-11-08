@@ -1,14 +1,6 @@
 import React from 'react';
-import { ImageBackground, StyleSheet } from 'react-native';
-
-const styles = StyleSheet.create({
-    levelImage: {
-        width: 80,
-        height: 35,
-        borderRadius: 5,
-        overflow: 'hidden',
-    }
-})
+import { ImageBackground } from 'react-native';
+import styles from './styles';
 
 export default ({ navigation }) => {
     const { phase } = navigation.state.params;
