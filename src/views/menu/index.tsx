@@ -3,7 +3,7 @@ import { TouchableWithoutFeedback, ImageBackground, View, Text } from 'react-nat
 import { Audio } from 'expo-av';
 
 export default ({ navigation }) => {
-    let audioBackground;
+    let audioBackground: Audio.Sound;
 
     const handleInit = (): void => {
         (async () => {

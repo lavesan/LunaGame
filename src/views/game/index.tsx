@@ -6,9 +6,9 @@ import RenderPhaseIcon from '../../components/level-card';
 import { ICard } from './interfaces';
 import { Audio } from 'expo-av';
 
-let audioBackground;
-let audioIntroduction;
-let audioFlipCard;
+let audioBackground: Audio.Sound;
+let audioIntroduction: Audio.Sound;
+let audioFlipCard: Audio.Sound;
 
 export default ({ navigation }) => {
     const [cards, setCards] = useState<ICard[]>([]);
